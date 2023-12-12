@@ -24,7 +24,7 @@ project_id = 'carlfilekeeper-database';
 recent_export = '09_23_cfk_export';
 table_name = 'non_carleton_files';
 address = project_id + '.' + recent_export + '.' + table_name
-num_files_per_query = '500'
+num_files_per_query = '1000'
 
 '''
     Written by ChatGPT
@@ -80,7 +80,8 @@ def delete_files(service, fileids):
 def delete_file(service, fileid):
     deletion_status = 'Deleting file with id ' + str(fileid)
     try:
-        service.files().delete(fileId=fileid).execute()
+        service.files().update(fileId=fileid,
+                                   body={'trashed': True}).execute()
         deletion_status += " ------ succeeded."
         print(deletion_status)
         return True
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
-    (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(fileids_to_delete, service)
+    (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(service, fileids_to_delete)
     mark_files_as_deleted(successfully_deleted_fileids)
     mark_files_as_deletion_unsuccessful(deletion_unsuccessful_fileids)
     print("end time: " + str(datetime.datetime.now()))
