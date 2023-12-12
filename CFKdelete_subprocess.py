@@ -86,10 +86,17 @@ def delete_file(service, fileid):
     @return: the result of the query
 '''
 def make_query(query):
-    from google.cloud import bigquery
-    client = bigquery.Client(project= "carlfilekeeper-database")
-    query_job = client.query(query)  # API request
-    return query_job.result()  # Waits for query to finish
+    print("Making query: " + str(query))
+    try:
+        from google.cloud import bigquery
+        client = bigquery.Client(project= "carlfilekeeper-database")
+        query_job = client.query(query)  # API request
+        print("------ success")
+        return query_job.result()  # Waits for query to finish
+    except Exception as error:
+        print("------ failed, error message: " + str(error))
+        print("query " + str(query) + "failed, error message: " + str(error), file = sys.stderr)
+
 
 '''
     make a SELECT query to the bigQuery database to get num_files_per_query files to delete
