@@ -5,6 +5,10 @@
     functions relative to deleting a batch of files in Google Drive according to fileids stored in a bigQuery database.
 '''
 
+import sys
+#!!! include the path of python packages here if you are not using a local machine !!!
+#!!! delete this line if you are on your own device !!!
+sys.path.append('c:/users/pengd/appdata/local/packages/pythonsoftwarefoundation.python.3.12_qbz5n2kfra8p0/localcache/local-packages/python312/site-packages')
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -83,7 +87,7 @@ def delete_file(service, fileid):
 '''
 def make_query(query):
     from google.cloud import bigquery
-    client = bigquery.Client()
+    client = bigquery.Client(project= "carlfilekeeper-database")
     query_job = client.query(query)  # API request
     return query_job.result()  # Waits for query to finish
 
@@ -130,6 +134,8 @@ if __name__ == '__main__':
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
+    '''
     delete_files(fileids_to_delete, service)
     mark_files_as_deleted(fileids_to_delete)
+    '''
     
