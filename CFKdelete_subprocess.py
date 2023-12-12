@@ -26,7 +26,7 @@ table_name = 'non_carleton_files';
 address = project_id + '.' + recent_export + '.' + table_name
 
 #number of files deleted each time this program is run
-num_files_per_query = '1000'
+num_files_per_query = '6000'
 
 '''
     Written by ChatGPT
