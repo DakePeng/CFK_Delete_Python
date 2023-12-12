@@ -20,13 +20,14 @@ import os
     https://developers.google.com/drive/api/guides/limits
 '''
 #number of times to run the subprocess
-num_times_to_run = 10
+num_times_to_run = 19
 
 
 '''
     Run subprocess and redirect output to a text file
 '''
 if __name__ == '__main__':
+    date = date.today()
     error_file = str(date) + '_error_log.txt'
     with open(error_file, "w") as error_log:
         for i in range(num_times_to_run):
