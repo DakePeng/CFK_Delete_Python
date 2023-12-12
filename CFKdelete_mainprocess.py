@@ -3,12 +3,12 @@
     Main deletion program for the CFK project
     Runs "CFKdelete_subprocess.py", and creates a log file to record successful deletions of each file.
     creates a log to record all unsuccessful deletions each day.
-    
+
     !!! Check all comments surrounded by exclamation marks "!!!" before production. !!!
 '''
 import subprocess
 from datetime import date
-
+import os
 '''
     !!! verify this number (num_times_to_run) before production !!!
     it takes roughly 5 minutes to complete each run that deletes 500 files. 
@@ -22,8 +22,6 @@ from datetime import date
 #number of times to run the subprocess
 num_times_to_run = 10
 
-#get today's date
-date = date.today()
 
 '''
     Run subprocess and redirect output to a text file
@@ -32,7 +30,12 @@ if __name__ == '__main__':
     error_file = str(date) + '_error_log.txt'
     with open(error_file, "w") as error_log:
         for i in range(num_times_to_run):
-            output_file = str(date) + '_attempt_' + str(i) + '_log.txt'
+            #get today's date
+            date = date.today()
+            folder = str(date) + "_log"
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+            output_file = "./" + folder + str(date) + '_attempt_' + str(i) + '_log.txt'
             with open(output_file, "w") as std_log:
                 #!!! fix "testsubprocess.py" before production !!!
                 subprocess.run(["python", "CFKdelete_subprocess.py"], stdout= std_log, stderr= error_log)

@@ -38,7 +38,7 @@ num_times_to_run
 
 # Authentication
 
-Set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "CFKdelete_subprocess.py". There should be an authentification window that pops up. Login as CFK and allow access to drive.
+Set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "CFKdelete_subprocess.py". There should be an authentification window that pops up. Login as CFK and allow access to drive. This will create a "token.json" file in you folder.
 
 # Running the code
 
