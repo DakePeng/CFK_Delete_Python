@@ -38,5 +38,4 @@ if __name__ == '__main__':
                 os.makedirs(folder)
             output_file = "./" + folder + '/' + str(date) + '_attempt_' + str(i) + '_log.txt'
             with open(output_file, "w") as std_log:
-                #!!! fix "testsubprocess.py" before production !!!
                 subprocess.run(["python", "CFKdelete_subprocess.py"], stdout= std_log, stderr= error_log)

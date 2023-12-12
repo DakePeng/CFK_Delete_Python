@@ -14,6 +14,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import datetime
+import multiprocessing
 import sys
 
 # If modifying these SCOPES, delete the file token.json.
@@ -28,6 +29,7 @@ address = project_id + '.' + recent_export + '.' + table_name
 #number of files deleted each time this program is run
 num_files_per_query = '6000'
 
+num_processes_running_simultaneously = 8
 '''
     Written by ChatGPT
     get Google credentials based on the local file "client_id.json"
@@ -69,7 +71,68 @@ def delete_files(service, fileids):
         else:
             deletion_unsuccessful_fileids.append(fileid)
     return (successfully_deleted_fileids, deletion_unsuccessful_fileids)
+
+'''
+    helper function for delete_files_multiprocess
+    delete multiple Google files based on their file id
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileids: a list of file ids of files to delete
+    @successfully_deleted_fileids: a list to store files that are successfully deleted
+    @deletion_unsuccessful_fileids: a list to store files that cannot be successufully deleted
+'''
+def delete_files_multiprocessing_helper(service, fileids,successfully_deleted_fileids,deletion_unsuccessful_fileids):
+    for fileid in fileids:
+        if(delete_file(service, fileid)):
+            successfully_deleted_fileids.append(fileid)
+        else:
+            deletion_unsuccessful_fileids.append(fileid)
+
+'''
+    use multuthreadding to delete files in fileids
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileids: an array of file ids of files to delete
+'''
+def delete_files_multiprocessing(service, fileids):
+    #multi-processing
+    chunks = divide_list(fileids, num_processes_running_simultaneously)
+    processes = []
+    successfully_deleted_fileids = multiprocessing.Manager().list()
+    deletion_unsuccessful_fileids = multiprocessing.Manager().list()
+    # Create and start multiple processes
+    for i in range(num_processes_running_simultaneously):
+        process = multiprocessing.Process(target=delete_files_multiprocessing_helper, args=(service, chunks[i], 
+                                            successfully_deleted_fileids,deletion_unsuccessful_fileids))
+        processes.append(process)
+        process.start()
+    
+    # Wait for all processes to finish
+    for process in processes:
+        process.join()
         
+    successfully_deleted_fileids = [item for sublist in successfully_deleted_fileids for item in sublist]
+    deletion_unsuccessful_fileids = [item for sublist in deletion_unsuccessful_fileids for item in sublist]
+    return (successfully_deleted_fileids, deletion_unsuccessful_fileids)
+        
+'''
+    Written by ChatGPT
+    divides up a list to num_parts parts
+    @lst: a list to be divided
+    @num_parts: integer. number of parts you want to divide lst to
+    @return: a list of lists that are parts of the input lst
+''' 
+def divide_list(lst, num_parts):
+    avg = len(lst) // num_parts
+    remainder = len(lst) % num_parts
+    result = []
+
+    i = 0
+    for _ in range(num_parts):
+        part_size = avg + 1 if remainder > 0 else avg
+        result.append(lst[i:i + part_size])
+        i += part_size
+        remainder -= 1
+
+    return result        
 
 '''
     delete one Google file based on its file id
@@ -169,6 +232,7 @@ if __name__ == '__main__':
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
+    #(successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files_multiprocessing(service, fileids_to_delete)
     (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(service, fileids_to_delete)
     mark_files_as_deleted(successfully_deleted_fileids)
     mark_files_as_deletion_unsuccessful(deletion_unsuccessful_fileids)
