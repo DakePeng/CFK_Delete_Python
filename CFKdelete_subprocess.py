@@ -70,8 +70,8 @@ def delete_file(service, fileid):
         service.files().delete(fileId=fileid).execute()
         deletion_status += " ------ succeeded."
         print(deletion_status)
-    except:
-        deletion_status += " ------ failed."
+    except Exception as error:
+        deletion_status += " ------ failed. Error message: " + str(error)
         print(deletion_status, file=sys.stderr)
     
 
