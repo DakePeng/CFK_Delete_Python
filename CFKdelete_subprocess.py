@@ -1,14 +1,15 @@
 ''' 
-By Dake Peng, Carleton 25'. Reference from ChatGPT and Google Documentation.
-https://chat.openai.com/share/73df68d6-5637-465f-8041-2f497ec37d16
-https://developers.google.com/drive/api/guides/about-sdk
-functions relative to deleting a batch of files in Google Drive according to fileids stored in a bigQuery database.
+    By Dake Peng, Carleton 25'. Reference from ChatGPT and Google Documentation.
+    https://chat.openai.com/share/73df68d6-5637-465f-8041-2f497ec37d16
+    https://developers.google.com/drive/api/guides/about-sdk
+    functions relative to deleting a batch of files in Google Drive according to fileids stored in a bigQuery database.
 '''
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
+import sys
 
 # If modifying these SCOPES, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/drive']
@@ -68,9 +69,11 @@ def delete_file(service, fileid):
     try:
         service.files().delete(fileId=fileid).execute()
         deletion_status += " ------ succeeded."
+        print(deletion_status)
     except:
         deletion_status += " ------ failed."
-    print(deletion_status)
+        print(deletion_status, file=sys.stderr)
+    
 
 '''
     make a given query to the bigQuery database specified in the global variable "address"
