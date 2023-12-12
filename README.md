@@ -5,14 +5,16 @@ Deletion code for the CFK Project
 To run this code, make sure you have installed:
 
 Python 3
+
 pip
-[Google CLI] [https://www.bing.com/search?pglt=2083&q=google+cli&cvid=e7c054ae71cc40cfbaf7345ed9b7af0f&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEC4YQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQDIGCAcQABhAMgYICBBFGDzSAQgyNjQ3ajBqMagCALACAA&FORM=ANNTA1&PC=U531]
+
+[Google CLI] (https://www.bing.com/search?pglt=2083&q=google+cli&cvid=e7c054ae71cc40cfbaf7345ed9b7af0f&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEC4YQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQDIGCAcQABhAMgYICBBFGDzSAQgyNjQ3ajBqMagCALACAA&FORM=ANNTA1&PC=U531)
 
 And enabled Google Drive API in your Google Cloud Service Project (carletonfilekeeper-database)
 
 Make sure you have a credentials file named "client_id.json" in the same folder as the python code.
 
-[Create an OAuth 2.0 Client ID credential as a desktop App] [https://developers.google.com/drive/api/quickstart/python]
+[Create an OAuth 2.0 Client ID credential as a desktop App] (https://developers.google.com/drive/api/quickstart/python)
 
 Before you start running, run the following commands in terminal:
 
@@ -25,7 +27,7 @@ Before running, look at each comment in CFKdelete_mainprocess.py and CFKdelete_s
 
 You might get an error that says "no module named "google"". If you are not running on a local machine, change the line "sys.path.append(...)" to append the address where your google packages are installed. This should be in a subdirectory of the folder where you installed Python.
 
-In "CFKdelete_subprocess.py", verify these information:
+In "CFKdelete_subprocess.py", verify this information:
 
 project_id
 recent_export
