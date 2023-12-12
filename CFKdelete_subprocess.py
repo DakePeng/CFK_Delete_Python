@@ -1,3 +1,10 @@
+''' 
+By Dake Peng, Carleton 25'. Reference from ChatGPT and Google Documentation.
+https://chat.openai.com/share/73df68d6-5637-465f-8041-2f497ec37d16
+https://developers.google.com/drive/api/guides/about-sdk
+functions relative to deleting a batch of files in Google Drive according to fileids stored in a bigQuery database.
+'''
+
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -13,6 +20,13 @@ table_name = 'non_carleton_files';
 address = project_id + '.' + recent_export + '.' + table_name
 num_files_per_query = '500'
 
+'''
+    Written by ChatGPT
+    get Google credentials based on the local file "client_id.json"
+    you can call Google service functions based on these credentials
+    
+    @return: cred, a google.oauth2.Credentials.credentials object
+'''
 def get_credentials():
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
@@ -32,10 +46,23 @@ def get_credentials():
             token.write(creds.to_json())
     return creds
 
+'''
+    delete multiple Google files based on their file id
+    
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileids: an array of file ids of files to delete
+'''
 def delete_files(service, fileids):
     for fileid in fileids:
         delete_file(service, fileid)
 
+'''
+    delete one Google file based on its file id
+    and prints the status of this deletion
+    
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileid: an string of fileid of the file to delete
+'''
 def delete_file(service, fileid):
     deletion_status = 'Deleting file with id ' + str(fileid)
     try:
@@ -45,12 +72,23 @@ def delete_file(service, fileid):
         deletion_status += " ------ failed."
     print(deletion_status)
 
+'''
+    make a given query to the bigQuery database specified in the global variable "address"
+    @query: a string of the SQL query to make
+    
+    @return: the result of the query
+'''
 def make_query(query):
     from google.cloud import bigquery
     client = bigquery.Client()
     query_job = client.query(query)  # API request
     return query_job.result()  # Waits for query to finish
+
+'''
+    make a SELECT query to the bigQuery database to get num_files_per_query files to delete
     
+    @return: an array of fileids to delete
+'''
 def get_files_to_delete():
     query = ('SELECT id FROM `' + address + '`WHERE deleted= "0" LIMIT ' + num_files_per_query)
     rows = make_query(query)
@@ -59,16 +97,31 @@ def get_files_to_delete():
         fileids_to_delete.append(row.id)
     return fileids_to_delete
 
+'''
+    make an UPDATE query to the bigQuery database to set the field 'deleted' 
+    of each fileid in the list fileids to '1'
+    
+    @fileids: a list of fileids(string)
+'''
 def mark_files_as_deleted(fileids):
     idlist = "( \'" + "\', \'".join(fileids) + "\')"
     query = ('UPDATE ' + address + ' SET deleted = "1" WHERE id IN ' + idlist)
     make_query(query)
+
+'''
+    make an UPDATE query to the bigQuery database to set the field 'deleted' 
+    of each fileid in the list fileids to '0'
     
+    @fileids: a list of fileids(string)
+'''
 def unmark_files_as_deleted(fileids):
     idlist = "( \'" + "\', \'".join(fileids) + "\')"
     query = ('UPDATE ' + address + ' SET deleted = "0" WHERE id IN ' + idlist)
     make_query(query)
-    
+
+'''
+    start a process that deletes num_files_per_query files in the bigQuery database
+'''
 if __name__ == '__main__':
     import os.path
     creds = get_credentials()
