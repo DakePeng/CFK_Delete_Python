@@ -13,6 +13,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
+import datetime
 import sys
 
 # If modifying these SCOPES, delete the file token.json.
@@ -96,16 +97,18 @@ def delete_file(service, fileid):
     @return: the result of the query
 '''
 def make_query(query):
-    print("Making query: " + str(query))
+    log_message = "Making query: " + str(query)
     try:
         from google.cloud import bigquery
         client = bigquery.Client(project= "carlfilekeeper-database")
         query_job = client.query(query)  # API request
-        print("------ success")
+        log_message += " ------ succeded"
+        print(log_message)
         return query_job.result()  # Waits for query to finish
     except Exception as error:
-        print("------ failed, error message: " + str(error))
-        print("query " + str(query) + "failed, error message: " + str(error), file = sys.stderr)
+        log_message += " ------ failed, error message: " + str(error)
+        print(log_message)
+        print(log_message, file = sys.stderr)
 
 
 '''
@@ -158,11 +161,14 @@ def unmark_files_as_deleted(fileids):
     start a process that deletes num_files_per_query files in the bigQuery database
 '''
 if __name__ == '__main__':
+    print("starting time: " + str(datetime.datetime.now()))
     import os.path
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
+    '''
     (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(fileids_to_delete, service)
     mark_files_as_deleted(successfully_deleted_fileids)
     mark_files_as_deletion_unsuccessful(deletion_unsuccessful_fileids)
-    
+    '''
+    print("ending time: " + str(datetime.datetime.now()))
