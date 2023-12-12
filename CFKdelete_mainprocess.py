@@ -12,8 +12,8 @@ num_times_to_run = 10
     this means if we leave the program running 14 consecutive days, it will be able to delete all 2 million files
     
     To be tested:
-    Google has a quota of 50,000 requests per project per day. That is the max # of deletions we can do with this code.
-    https://developers.google.com/analytics/devguides/reporting/mcf/v3/limits-quotas
+    Google has a quota of 12,000 requests per minute. That is the max # of deletions we can do with this code.
+    https://developers.google.com/drive/api/guides/limits
 '''
 
 if __name__ == '__main__':
