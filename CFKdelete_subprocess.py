@@ -166,9 +166,7 @@ if __name__ == '__main__':
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
-    '''
     (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(fileids_to_delete, service)
     mark_files_as_deleted(successfully_deleted_fileids)
     mark_files_as_deletion_unsuccessful(deletion_unsuccessful_fileids)
-    '''
-    print("ending time: " + str(datetime.datetime.now()))
+    print("end time: " + str(datetime.datetime.now()))
