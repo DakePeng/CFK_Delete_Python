@@ -134,8 +134,6 @@ if __name__ == '__main__':
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
-    '''
     delete_files(fileids_to_delete, service)
     mark_files_as_deleted(fileids_to_delete)
-    '''
     
