@@ -2,11 +2,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
-from datetime import datetime
 
 # If modifying these SCOPES, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
+# !!! VERIFY these before production !!!
 project_id = 'carlfilekeeper-database';
 recent_export = '09_23_cfk_export';
 table_name = 'non_carleton_files';
@@ -43,7 +43,6 @@ def delete_file(service, fileid):
         deletion_status += " ------ succeeded."
     except:
         deletion_status += " ------ failed."
-    
     print(deletion_status)
 
 def make_query(query):
