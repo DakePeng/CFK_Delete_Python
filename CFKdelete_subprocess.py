@@ -58,8 +58,15 @@ def get_credentials():
     @fileids: an array of file ids of files to delete
 '''
 def delete_files(service, fileids):
+    successfully_deleted_fileids = []
+    deletion_unsuccessful_fileids = []
     for fileid in fileids:
-        delete_file(service, fileid)
+        if(delete_file(service, fileid)):
+            successfully_deleted_fileids.append(fileid)
+        else:
+            deletion_unsuccessful_fileids.append(fileid)
+    return (successfully_deleted_fileids, deletion_unsuccessful_fileids)
+        
 
 '''
     delete one Google file based on its file id
@@ -67,6 +74,7 @@ def delete_files(service, fileids):
     
     @service: a Google service object created by googleapiclient.discovery.build
     @fileid: an string of fileid of the file to delete
+    @return: True if the deletion succeeded, False if not
 '''
 def delete_file(service, fileid):
     deletion_status = 'Deleting file with id ' + str(fileid)
@@ -74,9 +82,11 @@ def delete_file(service, fileid):
         service.files().delete(fileId=fileid).execute()
         deletion_status += " ------ succeeded."
         print(deletion_status)
+        return True
     except Exception as error:
         deletion_status += " ------ failed. Error message: " + str(error)
         print(deletion_status, file=sys.stderr)
+        return False
     
 
 '''
@@ -124,6 +134,17 @@ def mark_files_as_deleted(fileids):
 
 '''
     make an UPDATE query to the bigQuery database to set the field 'deleted' 
+    of each fileid in the list fileids to '-1'
+    
+    @fileids: a list of fileids(string)
+'''
+def mark_files_as_deletion_unsuccessful(fileids):
+    idlist = "( \'" + "\', \'".join(fileids) + "\')"
+    query = ('UPDATE ' + address + ' SET deleted = "-1" WHERE id IN ' + idlist)
+    make_query(query)
+
+'''
+    make an UPDATE query to the bigQuery database to set the field 'deleted' 
     of each fileid in the list fileids to '0'
     
     @fileids: a list of fileids(string)
@@ -141,6 +162,7 @@ if __name__ == '__main__':
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
-    delete_files(fileids_to_delete, service)
-    mark_files_as_deleted(fileids_to_delete)
+    (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(fileids_to_delete, service)
+    mark_files_as_deleted(successfully_deleted_fileids)
+    mark_files_as_deletion_unsuccessful(deletion_unsuccessful_fileids)
     
