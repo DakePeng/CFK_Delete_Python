@@ -1,6 +1,9 @@
 ''' 
     By Dake Peng, Carleton 25'.
     Main deletion program for the CFK project
+    Runs "CFKdelete_subprocess.py", and creates a log file to record successful deletions of each file.
+    creates a log to record all unsuccessful deletions each day.
+    
     !!! Check all comments surrounded by exclamation marks "!!!" before production. !!!
 '''
 import subprocess
@@ -16,6 +19,7 @@ from datetime import date
     (this may not effect our code at all)
     https://developers.google.com/drive/api/guides/limits
 '''
+#number of times to run the subprocess
 num_times_to_run = 10
 
 #get today's date

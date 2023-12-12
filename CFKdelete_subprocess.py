@@ -1,6 +1,6 @@
 ''' 
     By Dake Peng, Carleton 25'. Reference from ChatGPT and Google Documentation.
-    https://chat.openai.com/share/73df68d6-5637-465f-8041-2f497ec37d16
+    https://chat.openai.com/share/1e028aaa-9c3b-4c24-a5d4-f8417a16173c
     https://developers.google.com/drive/api/guides/about-sdk
     functions relative to deleting a batch of files in Google Drive according to fileids stored in a bigQuery database.
 '''
@@ -24,6 +24,8 @@ project_id = 'carlfilekeeper-database';
 recent_export = '09_23_cfk_export';
 table_name = 'non_carleton_files';
 address = project_id + '.' + recent_export + '.' + table_name
+
+#number of files deleted each time this program is run
 num_files_per_query = '1000'
 
 '''
