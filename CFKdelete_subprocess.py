@@ -36,6 +36,7 @@ num_files_per_query = '6000'
     @return: cred, a google.oauth2.Credentials.credentials object
 '''
 def get_credentials():
+    import os.path
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -165,7 +166,6 @@ def unmark_files_as_deleted(fileids):
 '''
 if __name__ == '__main__':
     print("starting time: " + str(datetime.datetime.now()))
-    import os.path
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     fileids_to_delete = get_files_to_delete()
