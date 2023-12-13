@@ -20,7 +20,7 @@ import os
     https://developers.google.com/drive/api/guides/limits
 '''
 #number of times to run the subprocess
-num_times_to_run = 19
+num_times_to_run = 1
 
 
 '''

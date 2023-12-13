@@ -1,5 +1,7 @@
 '''
     Run this code only when you manually interrupt the deletion process.
+    The deletetion of files recorded in the the latest log would have happened, 
+    but they are not updated on our database
     change the log_path to the latest log and hit run.
 '''
 from CFKdelete_subprocess import *
