@@ -27,9 +27,10 @@ table_name = 'non_carleton_files';
 address = project_id + '.' + recent_export + '.' + table_name
 
 #number of files deleted each time this program is run
-num_files_per_query = '500'
+num_files_per_query = '10000'
 
-num_processes_running_simultaneously = 20
+#number of processes running simultaneously. It is recommended that this number is below the number of cores your CPU to achieve max efficiency.
+num_processes_running_simultaneously = 16
 '''
     Written by ChatGPT
     get Google credentials based on the local file "client_id.json"
