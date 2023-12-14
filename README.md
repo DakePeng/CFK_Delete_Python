@@ -37,15 +37,25 @@ num_files_per_query
 In "CFKdelete_mainprocess.py", verify: 
 
 num_times_to_run
+num_processes_running_simultaneously
 
 ## Authentication
 
 Set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "CFKdelete_subprocess.py". There should be an authentification window that pops up. Login as CFK and allow access to drive. This will create a "token.json" file in you folder.
 
+## Multiprocessing
+
+To achive maximum efficiency, the ptrogram incorporated multiprocessing. 
+to turn this off, switch the fllowing line in "CFKdelete_subprocess.py": 
+(successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files_multiprocessing(service, fileids_to_delete)
+to 
+(successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(service, fileids_to_delete)
+
+
 ## Running the code
 
 You can set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "CFKdelete_subprocess.py". If everything works out, you can set this to a larger number (0 ~ 30000) and run "CFKdelete_mainprocess.py"
 
-# Deleting a large number of files
+## Deleting a large number of files
 
 In 12/2023 we are attempting to delete 2 million files. To do this, we will set up this code to run on a machine in ITS overnight. We estimate that it will take 20 days to delete all files.
