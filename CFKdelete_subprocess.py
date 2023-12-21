@@ -156,6 +156,69 @@ def delete_file(service, fileid):
         deletion_status += " ------ failed. Error message: " + str(error)
         print(deletion_status, file=sys.stderr)
         return False
+
+'''
+    use multuthreadding to restore files in fileids from trash
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileids: an array of file ids of files to restore
+'''
+def restore_files_multiprocessing(service, fileids):
+    #multi-processing
+    chunks = divide_list(fileids, num_processes_running_simultaneously)
+    processes = []
+    successfully_restored_fileids = multiprocessing.Manager().list()
+    restoration_unsuccessful_fileids = multiprocessing.Manager().list()
+    # Create and start multiple processes
+    for i in range(num_processes_running_simultaneously):
+        process = multiprocessing.Process(target=delete_files_multiprocessing_helper, args=(service, chunks[i], 
+                                            successfully_restored_fileids,restoration_unsuccessful_fileids))
+        processes.append(process)
+        process.start()
+    
+    # Wait for all processes to finish
+    for process in processes:
+        process.join()
+        
+    successfully_deleted_fileids = [sublist for sublist in successfully_deleted_fileids]
+    deletion_unsuccessful_fileids = [sublist for sublist in deletion_unsuccessful_fileids]
+    return (successfully_deleted_fileids, deletion_unsuccessful_fileids)
+
+'''
+    helper function for delete_files_multiprocess
+    delete multiple Google files based on their file id
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileids: a list of file ids of files to delete
+    @successfully_deleted_fileids: a list to store files that are successfully deleted
+    @deletion_unsuccessful_fileids: a list to store files that cannot be successufully deleted
+'''
+def delete_files_multiprocessing_helper(service, fileids,successfully_deleted_fileids,deletion_unsuccessful_fileids):
+    for fileid in fileids:
+        if(delete_file(service, fileid)):
+            successfully_deleted_fileids.append(fileid)
+        else:
+            deletion_unsuccessful_fileids.append(fileid)
+
+
+'''
+    restore one Google file based on its file id
+    and prints the status of this process
+    
+    @service: a Google service object created by googleapiclient.discovery.build
+    @fileid: an string of fileid of the file to delete
+    @return: True if the deletion succeeded, False if not
+'''
+def restore_file(service, fileid):
+    deletion_status = 'Restoring file with id ' + str(fileid)
+    try:
+        service.files().update(fileId=fileid,
+                                   body={'trashed': False}).execute()
+        deletion_status += " ------ succeeded."
+        print(deletion_status)
+        return True
+    except Exception as error:
+        deletion_status += " ------ failed. Error message: " + str(error)
+        print(deletion_status, file=sys.stderr)
+        return False
     
 
 '''
@@ -229,6 +292,7 @@ def unmark_files_as_deleted(fileids):
     start a process that deletes num_files_per_query files in the bigQuery database
 '''
 if __name__ == '__main__':
+    '''
     print("starting time: " + str(datetime.datetime.now()))
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
@@ -237,3 +301,9 @@ if __name__ == '__main__':
     mark_files_as_deleted(successfully_deleted_fileids)
     mark_files_as_deletion_unsuccessful(deletion_unsuccessful_fileids)
     print("end time: " + str(datetime.datetime.now()))
+    '''
+    
+    fileid = '1XB8eCEXBoZOLMQ27ADzCOMvj1Sui3me0o1oCky_7Jag'
+    creds = get_credentials()
+    service = build('drive', 'v3', credentials=creds)
+    restore_file(service, fileid)
