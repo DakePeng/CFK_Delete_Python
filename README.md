@@ -28,7 +28,7 @@ Before running, look at each comment in CFKdelete_mainprocess.py and CFKdelete_s
 
 You might get an error that says "no module named "google"". If you are not running on a local machine, change the line "sys.path.append(...)" to append the address where your google packages are installed. This should be in a subdirectory of the folder where you installed Python.
 
-In "CFKdelete_subprocess.py", verify this information:
+In "CFKdelete_subprocess.py", verify these:
 
 project_id
 recent_export
@@ -73,3 +73,20 @@ This project includes code to mass download files in Google drive. The following
 The prerequisites are the same as CFK delete.
 
 ## Configuration
+
+In "CFKdownload_subprocess.py", verify these:
+
+download_path = './test-download/'
+project_id
+recent_export
+table_name 
+num_files_per_query
+
+In "CFKdownload_mainprocess.py", verify: 
+
+num_times_to_run
+num_processes_running_simultaneously
+
+## Running the code
+
+You can set num_files_per_query in "CFKdownload_subprocess.py" to 1 and test run "CFKdownload_subprocess.py". If everything works out, you can set this to a larger number (0 ~ 30000) and run "CFKdelete_mainprocess.py"
