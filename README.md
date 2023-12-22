@@ -1,5 +1,6 @@
-# CFK_Delete_Python
+# CFK-PythonDeletion
 Deletion code for the CFK Project
+Connects to a Bigquery database and uses the information stored in it to delete files
 
 ## Prerequisites
 To run this code, make sure you have installed:
@@ -51,7 +52,6 @@ to turn this off, switch the fllowing line in "CFKdelete_subprocess.py":
 to 
 (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(service, fileids_to_delete)
 
-
 ## Running the code
 
 You can set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "CFKdelete_subprocess.py". If everything works out, you can set this to a larger number (0 ~ 30000) and run "CFKdelete_mainprocess.py"
@@ -59,3 +59,17 @@ You can set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "
 ## Deleting a large number of files
 
 In 12/2023 we are attempting to delete 2 million files. To do this, we will set up this code to run on a machine in ITS overnight. We estimate that it will take 20 days to delete all files.
+
+## Restoration
+
+If the situation comes that we have to untrash files that we deleted, run "CFKrestore_mainprocess.py" in the same fashion as "CFKdelete"
+
+# CFK - Download
+
+This project includes code to mass download files in Google drive. The following are instructions on how to do it.
+
+## Prerequisites
+
+The prerequisites are the same as CFK delete.
+
+## Configuration
