@@ -1,9 +1,6 @@
 ''' 
     By Dake Peng, Carleton 25'.
-    Main deletion program for the CFK project
-    Runs "CFKdelete_subprocess.py", and creates a log file to record successful deletions of each file.
-    creates a log to record all unsuccessful deletions each day.
-
+    downloads files from a file set in the CFK bigquery database
     !!! Check all comments surrounded by exclamation marks "!!!" before production. !!!
 '''
 import subprocess
