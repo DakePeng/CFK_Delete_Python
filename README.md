@@ -49,7 +49,9 @@ Set num_files_per_query in "CFKdelete_subprocess.py" to 1 and test run "CFKdelet
 To achive maximum efficiency, the ptrogram incorporated multiprocessing. 
 to turn this off, switch the fllowing line in "CFKdelete_subprocess.py": 
 (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files_multiprocessing(service, fileids_to_delete)
+
 to 
+
 (successfully_deleted_fileids, deletion_unsuccessful_fileids) = delete_files(service, fileids_to_delete)
 
 ## Running the code
@@ -90,3 +92,13 @@ num_processes_running_simultaneously
 ## Running the code
 
 You can set num_files_per_query in "CFKdownload_subprocess.py" to 1 and test run "CFKdownload_subprocess.py". If everything works out, you can set this to a larger number (0 ~ 30000) and run "CFKdelete_mainprocess.py"
+
+# CFK - Metrics
+
+This is a temporary code to obtain metrics for files shared via link and update a temporary database in bigquery (all_files) with the following fields:
+
+Id, isParsed, fileSize, isCarleton, isSharedciaLink, isExplicitlyShared
+
+it calls service.files().get(fileId=fileid, fields="permissions").execute() to get the metadata of the files and processes the permissions metadata.
+
+to run this code, reference the configurations section above
